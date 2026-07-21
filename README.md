@@ -1,6 +1,7 @@
 # Financial Fraud Detection
 
 [![Python application](https://github.com/agvs03/financial-fraud-detection/actions/workflows/python-app.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/python-app.yml)
+[![Pipeline](https://github.com/agvs03/financial-fraud-detection/actions/workflows/pipeline.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/pipeline.yml)
 [![CodeQL](https://github.com/agvs03/financial-fraud-detection/actions/workflows/codeql.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/codeql.yml)
 [![Docker Image CI](https://github.com/agvs03/financial-fraud-detection/actions/workflows/docker-image.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/docker-image.yml)
 [![Python 3.10–3.11](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue.svg)](https://www.python.org/)
