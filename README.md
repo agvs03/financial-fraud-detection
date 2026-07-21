@@ -1,5 +1,11 @@
 # Financial Fraud Detection
 
+[![Python application](https://github.com/agvs03/financial-fraud-detection/actions/workflows/python-app.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/python-app.yml)
+[![CodeQL](https://github.com/agvs03/financial-fraud-detection/actions/workflows/codeql.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/codeql.yml)
+[![Docker Image CI](https://github.com/agvs03/financial-fraud-detection/actions/workflows/docker-image.yml/badge.svg)](https://github.com/agvs03/financial-fraud-detection/actions/workflows/docker-image.yml)
+[![Python 3.10–3.11](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 An end-to-end deep-learning system for detecting fraudulent credit-card
 transactions on a highly imbalanced dataset (284,807 transactions, 0.172%
 fraud). A TensorFlow/Keras artificial neural network is trained with SMOTE
