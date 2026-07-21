@@ -1,0 +1,62 @@
+# =============================================================================
+# Central configuration for the fraud-detection pipeline.
+# Values here are read by src/config.py and injected into every stage
+# (preprocessing -> training -> evaluation -> serving).
+# =============================================================================
+
+data:
+  raw_path: "data/creditcard.csv"      # Kaggle ULB credit-card dataset
+  target_col: "Class"                  # 1 = fraud, 0 = legitimate
+  test_size: 0.20
+  val_size: 0.20                       # fraction of the train split held out for validation
+  random_state: 42
+
+preprocessing:
+  # Columns scaled with a RobustScaler (heavy-tailed, contain outliers).
+  robust_scale_cols: ["Amount", "Time"]
+  # SMOTE is applied ONLY to the training fold to avoid leaking synthetic
+  # minority samples into validation/test.
+  smote:
+    enabled: true
+    sampling_strategy: 0.10            # bring fraud up to 10% of the majority count
+    k_neighbors: 5
+
+model:
+  ann:
+    hidden_units: [128, 64, 32]
+    dropout: 0.25
+    l2: 0.0001
+    activation: "relu"
+    output_activation: "sigmoid"
+    optimizer: "adam"
+    learning_rate: 0.0008
+    epochs: 100
+    batch_size: 1024
+    # SMOTE already lifts fraud to ~10%; a light residual class weight keeps
+    # the ranking (PR-AUC) sharp without collapsing precision the way a heavy
+    # weight does.
+    class_weight:
+      "0": 1.0
+      "1": 2.0
+    early_stopping_patience: 15
+
+threshold:
+  # Decision threshold is tuned on the validation set rather than fixed at 0.5.
+  # "recall_at_precision" (default): maximize recall while keeping precision at
+  # or above the floor — a defensible fraud rule (catch as much fraud as
+  # possible while keeping at least half of alerts genuine). Chasing a fixed
+  # very-high recall (e.g. 0.968) instead collapses precision toward zero on
+  # this data, because a few frauds are essentially unrankable.
+  # "target_recall": pick the highest-precision threshold above a recall floor.
+  # "best_f1": the balanced point.
+  strategy: "recall_at_precision"
+  min_precision: 0.50
+  target_recall: 0.968
+
+paths:
+  model_dir: "models"
+  ann_model: "models/ann_fraud.keras"
+  scaler: "models/scaler.joblib"
+  threshold_file: "models/threshold.json"
+  metrics_file: "reports/metrics.json"
+  figures_dir: "reports/figures"
