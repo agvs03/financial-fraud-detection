@@ -2,9 +2,12 @@
 # newer version; CI runs on the PR, and you merge if it's green. Keeps the
 # Python stack (TensorFlow, scikit-learn, FastAPI, …) and the GitHub Actions
 # current without manual tracking.
+#
+# `groups` collapses all updates in each ecosystem into a SINGLE PR per week,
+# instead of one PR per package — far less noise on a solo repo.
 version: 2
 updates:
-  # Python packages in requirements.txt
+  # Python packages in requirements.txt — one grouped PR per week
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -14,8 +17,12 @@ updates:
       prefix: "deps"
     labels:
       - "dependencies"
+    groups:
+      python:
+        patterns:
+          - "*"
 
-  # Versions of the actions used inside .github/workflows/*.yml
+  # Versions of the actions used inside .github/workflows/*.yml — one grouped PR
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -24,3 +31,7 @@ updates:
       prefix: "ci"
     labels:
       - "dependencies"
+    groups:
+      actions:
+        patterns:
+          - "*"
