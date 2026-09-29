@@ -1,0 +1,47 @@
+# Vela CI/CD pipeline — https://go-vela.github.io/docs/
+#
+# Mirrors the GitHub Actions CI: install deps, run the training pipeline on
+# synthetic data as a smoke test, then run the test suite.
+#
+# Vela runs each step in its OWN container that shares only the cloned workspace
+# (/vela/src). System site-packages do NOT carry between steps, so we create a
+# virtualenv INSIDE the workspace during install and re-activate it in later
+# steps.
+#
+# This file does nothing until a self-hosted Vela server + worker is watching
+# this repo (there is no hosted Vela cloud). See vela/README.md to run it.
+version: "1"
+
+steps:
+  - name: install dependencies
+    image: python:3.11
+    pull: not_present
+    commands:
+      - python -m venv .venv
+      - . .venv/bin/activate && python -m pip install --upgrade pip
+      - . .venv/bin/activate && pip install -r requirements.txt
+    ruleset:
+      event: [ push, pull_request ]
+      branch: main
+
+  - name: pipeline smoke test
+    image: python:3.11
+    pull: not_present
+    commands:
+      # Real Kaggle data is gated/large, so CI exercises the pipeline on a
+      # schema-compatible synthetic sample (same as the GitHub Actions run).
+      - . .venv/bin/activate && python scripts/make_sample_data.py --rows 20000 --out data/creditcard.csv
+      - . .venv/bin/activate && python -m src.train
+      - . .venv/bin/activate && python -c "import json; m=json.load(open('reports/metrics.json')); assert len(m['models'])==4; print('models:', [x['name'] for x in m['models']])"
+    ruleset:
+      event: [ push, pull_request ]
+      branch: main
+
+  - name: tests
+    image: python:3.11
+    pull: not_present
+    commands:
+      - . .venv/bin/activate && pytest -q
+    ruleset:
+      event: [ push, pull_request ]
+      branch: main
