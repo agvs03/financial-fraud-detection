@@ -1,0 +1,44 @@
+name: Tag on merge to main
+
+# Mirrors the Vela-at-Target flow: every merge/push to main creates a new
+# version tag, so your "build portal" (the Actions tab) has a tagged build per
+# change. Auto-increments the patch version: v0.1.0 -> v0.1.1 -> v0.1.2 ...
+#
+# Note: builds themselves (per push AND per pull request) already show in the
+# Actions tab from the other workflows — this just adds the tag on each merge.
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write          # required for the GITHUB_TOKEN to push a tag
+
+concurrency:
+  group: tag-on-merge      # serialize so two quick merges can't collide on a tag
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0    # need full history + existing tags
+
+      - name: Create next version tag
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          latest=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -n1)
+          if [ -z "$latest" ]; then
+            next="v0.1.0"
+          else
+            v=${latest#v}
+            major=${v%%.*}; rest=${v#*.}; minor=${rest%%.*}; patch=${rest#*.}
+            next="v${major}.${minor}.$((patch + 1))"
+          fi
+          echo "Latest tag: ${latest:-none}  ->  new tag: $next"
+          git tag -a "$next" -m "Build for ${GITHUB_SHA} (run ${GITHUB_RUN_NUMBER})"
+          git push origin "$next"
+          echo "### 🏷️ Tagged \`$next\` on merge to main" >> "$GITHUB_STEP_SUMMARY"
