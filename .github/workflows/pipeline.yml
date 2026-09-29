@@ -9,8 +9,10 @@ name: Pipeline
 on:
   push:
     branches: [ "main" ]
+    paths-ignore: [ "**.md", "LICENSE", "docs/**", ".gitignore" ]
   pull_request:
     branches: [ "main" ]
+    paths-ignore: [ "**.md", "LICENSE", "docs/**", ".gitignore" ]
 
 permissions:
   contents: read

@@ -1,0 +1,26 @@
+# Automated dependency updates. Dependabot opens a PR when a dependency has a
+# newer version; CI runs on the PR, and you merge if it's green. Keeps the
+# Python stack (TensorFlow, scikit-learn, FastAPI, …) and the GitHub Actions
+# current without manual tracking.
+version: 2
+updates:
+  # Python packages in requirements.txt
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+
+  # Versions of the actions used inside .github/workflows/*.yml
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
