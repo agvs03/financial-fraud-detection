@@ -14,7 +14,7 @@ imbalanced-learn==0.12.3
 xgboost==2.1.0
 
 # Visualization (EDA + evaluation)
-matplotlib==3.9.1
+matplotlib==3.10.9
 seaborn==0.13.2
 
 # API layer
