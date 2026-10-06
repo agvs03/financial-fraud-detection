@@ -18,7 +18,7 @@ matplotlib==3.10.9
 seaborn==0.13.2
 
 # API layer
-fastapi==0.141.1
+fastapi==0.142.2
 uvicorn[standard]==0.54.0
 pydantic==2.13.5
 pydantic-settings==2.15.0
@@ -30,7 +30,7 @@ psycopg2-binary==2.9.13
 # Utilities
 joblib==1.6.0
 pyyaml==6.0.3
-python-dotenv==1.2.3
+python-dotenv==1.2.4
 
 # Notebook / testing
 jupyter==1.1.1
